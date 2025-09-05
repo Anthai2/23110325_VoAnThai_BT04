@@ -1,0 +1,18 @@
+package vn.iostar.configs;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Persistence;
+
+@PersistenceContext
+public class JPAConfig {
+
+	public static EntityManager getEntityManager() {
+
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("jpa-hibernate-sql");
+
+		return factory.createEntityManager();
+
+	}
+}
