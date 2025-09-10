@@ -1,7 +1,6 @@
 package vn.iostar.services.impl;
 
 import java.util.List;
-
 import vn.iostar.dao.CategoryDao;
 import vn.iostar.dao.impl.CategoryDaoImpl;
 import vn.iostar.entity.Category;
@@ -12,8 +11,8 @@ public class CategoryServiceImpl implements ICategoryService {
     private final CategoryDao categoryDao = new CategoryDaoImpl();
 
     @Override
-    public void insert(Category category) {
-        categoryDao.create(category);   // hoặc categoryDao.insert(...) nếu DAO bạn đặt tên insert
+    public List<Category> findAll() {
+        return categoryDao.findAll();
     }
 
     @Override
@@ -22,22 +21,30 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public void update(Category category) {
-        categoryDao.update(category);
+    public List<Category> findByUserId(int userId) {
+        return categoryDao.findByUserId(userId);
     }
 
     @Override
-    public List<Category> findAll() {
-        return categoryDao.findAll();
+    public boolean insert(Category category) {
+        // DAO.create(...) trả về Category hoặc null
+        return categoryDao.create(category) != null;
     }
 
     @Override
-    public void deleteById(int id) {
-        categoryDao.delete(id);
+    public boolean update(Category category) {
+        // DAO.update(...) trả về Category hoặc null
+        return categoryDao.update(category) != null;
     }
 
     @Override
-    public List<Category> findByUserId(int id) {
-        return categoryDao.findByUserId(id);
+    public boolean delete(int id) {
+        try {
+            categoryDao.delete(id); // DAO của bạn là void
+            return true;
+        } catch (Exception e) {
+            // nếu DAO ném lỗi khi không xoá được
+            return false;
+        }
     }
 }

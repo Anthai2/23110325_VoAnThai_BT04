@@ -64,4 +64,15 @@ public class UserServiceImpl implements IUserService {
         // TODO: hash newPassword trước khi lưu nếu có
         return userDao.updatePasswordByEmail(email, newPassword);
     }
+
+	public Users findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean insert(String trim, int i, String imageFileName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

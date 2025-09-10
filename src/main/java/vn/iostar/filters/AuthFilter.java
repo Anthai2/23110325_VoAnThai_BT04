@@ -12,36 +12,30 @@ import java.util.Set;
 @WebFilter(filterName = "AuthFilter", urlPatterns = {"/*"})
 public class AuthFilter implements Filter {
     private static final Set<String> PUBLIC = Set.of(
-            "/", "/login", "/register", "/verify-otp", "/reset-password", "/waiting",
-            "/style/", "/image", "/assets/", "/js/", "/css/"
+            "/", "/login", "/register", "/verify-otp", "/reset-password", "/waiting", "/logout",
+            "/style/", "/image", "/assets/", "/js/", "/css/", "/favicon", "/favicon.ico"
     );
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
-    }
-
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest r = (HttpServletRequest) req;
         HttpServletResponse p = (HttpServletResponse) res;
         String path = r.getRequestURI().substring(r.getContextPath().length());
 
         boolean isPublic = PUBLIC.stream().anyMatch(path::startsWith);
         Users acc = (Users) r.getSession().getAttribute("account");
+
         if (isPublic || "/".equals(path)) {
             chain.doFilter(req, res);
             return;
         }
+
         if (acc == null) {
             p.sendRedirect(r.getContextPath() + "/login");
-            return;
+            return; // bắt buộc
         }
-        chain.doFilter(req, res);
-    }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
+        chain.doFilter(req, res);
     }
 }

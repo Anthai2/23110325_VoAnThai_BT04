@@ -21,4 +21,8 @@ public interface IUserService {
     Users getUserByEmail(String email);
 
     boolean updatePasswordByEmail(String email, String newPassword);
+
+
+	boolean insert(String trim, int i, String imageFileName);
+    
 }

@@ -12,8 +12,9 @@ import vn.iostar.services.impl.CategoryServiceImpl;
 import java.io.IOException;
 
 @WebFilter(filterName = "OwnerFilter", urlPatterns = {
-        "/category/edit", "/category/update", "/category/delete"
-})
+		  "/admin/category/edit", "/admin/category/update", "/admin/category/delete"
+		})
+
 public class OwnerFilter implements Filter {
     private final ICategoryService categoryService = new CategoryServiceImpl();
 

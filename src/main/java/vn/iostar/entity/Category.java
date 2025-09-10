@@ -103,4 +103,14 @@ public class Category {
 	public void setCreated_at(LocalDateTime created_at) {
 		this.created_at = created_at;
 	}
+
+	public void setStatus(int int1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setImages(String newImg) {
+		// TODO Auto-generated method stub
+		
+	}
 }
