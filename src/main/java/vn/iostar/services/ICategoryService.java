@@ -1,19 +1,20 @@
 package vn.iostar.services;
 
+import vn.iostar.entity.Category;
+
 import java.util.List;
 
-import vn.iostar.models.CategoryModel;
-
 public interface ICategoryService {
-	List<CategoryModel> findAll();
+    void insert(Category category);
 
-	CategoryModel findById(int id);
+    Category findById(int id);
 
-	void insert(CategoryModel category);
+    void update(Category category);
 
-	void update(CategoryModel category);
+    List<Category> findAll();
 
-	void delete(int id);
+    void deleteById(int id);
 
-	List<CategoryModel> findName(String keyword);
+    List<Category> findByUserId(int id);
+    
 }

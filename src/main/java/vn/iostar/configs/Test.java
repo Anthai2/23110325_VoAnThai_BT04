@@ -11,9 +11,7 @@ public class Test {
 		EntityManager enma = JPAConfig.getEntityManager();
 		EntityTransaction trans = enma.getTransaction();
 		Category cate = new Category();
-		cate.setCategoryname("Iphone");
-		cate.setImages("abc.jpg");
-		cate.setStatus(1);
+
 		try {
 		    trans.begin();
 		    enma.persist(cate);

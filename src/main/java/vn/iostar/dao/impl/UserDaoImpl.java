@@ -1,108 +1,111 @@
 package vn.iostar.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import vn.iostar.configs.JPAConfig;
-import vn.iostar.dao.IUserDao;
-import vn.iostar.models.UserModel;
+import vn.iostar.dao.UserDao;
+import vn.iostar.entity.Users;
 
-public class UserDaoImpl implements IUserDao {
+public class UserDaoImpl implements UserDao {
 
-    private UserModel mapRow(ResultSet rs) throws Exception {
-        UserModel u = new UserModel();
-        u.setId(rs.getInt("id"));
-        u.setUsername(rs.getString("username"));
-        u.setPassword(rs.getString("password"));
-        u.setImages(rs.getString("images"));
-        u.setFullname(rs.getString("fullname"));
-        u.setEmail(rs.getString("email"));
-        u.setAvatar(rs.getString("avatar"));
-        u.setRoleid(rs.getInt("roleid"));
-        u.setPhone(rs.getString("phone"));
-        u.setCreatedDate(rs.getDate("createDate")); 
-        return u;
+    @Override
+    public Users get(String username) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            var q = em.createQuery("SELECT u FROM Users u WHERE u.username = :username", Users.class);
+            q.setParameter("username", username);
+            return q.getResultStream().findFirst().orElse(null);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
-    public List<UserModel> findAll() {
-        String sql = "SELECT * FROM users";
-        List<UserModel> list = new ArrayList<>();
-        try (Connection conn = (Connection) new JPAConfig();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+    public void insert(Users user) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.persist(user);
+            tx.commit();
+        } catch (Exception ex) {
+            tx.rollback();
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
 
-            while (rs.next()) {
-                list.add(mapRow(rs));
+    @Override
+    public boolean checkExistEmail(String email) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            var q = em.createQuery("SELECT u FROM Users u WHERE u.email = :email", Users.class);
+            q.setParameter("email", email);
+            return q.getResultStream().findFirst().orElse(null) != null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean checkExistUsername(String username) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            var q = em.createQuery("SELECT u FROM Users u WHERE u.username = :username", Users.class);
+            q.setParameter("username", username);
+            return q.getResultStream().findFirst().orElse(null) != null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean checkExistPhone(String phone) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            var q = em.createQuery("SELECT u FROM Users u WHERE u.phone = :phone", Users.class);
+            q.setParameter("phone", phone);
+            return q.getResultStream().findFirst().orElse(null) != null;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Users getUserByEmail(String email) {
+        EntityManager em = JPAConfig.getEntityManager();
+        try {
+            var q = em.createQuery("SELECT u FROM Users u WHERE u.email = :email", Users.class);
+            q.setParameter("email", email);
+            return q.getResultStream().findFirst().orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        EntityManager em = JPAConfig.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            int updated = em.createQuery(
+                            "UPDATE Users u SET u.password = :pwd WHERE u.email = :email")
+                    .setParameter("pwd", newPassword)
+                    .setParameter("email", email)
+                    .executeUpdate();
+
+            tx.commit();
+            return updated > 0;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list; 
-    }
-
-    @Override
-    public void insert(UserModel user) {
-        String sql = "INSERT INTO users " +
-                     " (email, username, fullname, password, avatar, roleid, phone, createDate) " +
-                     " VALUES (?,?,?,?,?,?,?,?)";
-        try (Connection conn = (Connection) new JPAConfig();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, user.getEmail());
-            ps.setString(2, user.getUsername());
-            ps.setString(3, user.getFullname());
-            ps.setString(4, user.getPassword());
-            ps.setString(5, user.getAvatar());
-            ps.setInt(6, user.getRoleid());
-            ps.setString(7, user.getPhone());
-            ps.setDate(8, user.getCreatedDate());
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public UserModel findById(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = (Connection) new JPAConfig();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapRow(rs);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public UserModel findByUsername(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
-        try (Connection conn =(Connection) new JPAConfig();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return mapRow(rs);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        IUserDao userDao = new UserDaoImpl();
-        //System.out.println(userDao.findById(1));
-        for (UserModel u : userDao.findAll()) {
-            System.out.println(u);
+            return false;
+        } finally {
+            em.close();
         }
     }
 }
