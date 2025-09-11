@@ -54,7 +54,7 @@ public class CategoryController extends HttpServlet {
             }
             case "/category/delete": {
                 int id = Integer.parseInt(request.getParameter("id"));
-                categoryService.deleteById(id);
+                categoryService.delete(id);
                 redirectByRole(response, ctx, user.getRoleid());
                 return;
             }

@@ -22,33 +22,25 @@ public class LoginController extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session != null && session.getAttribute("account") != null) {
             response.sendRedirect(request.getContextPath() + "/waiting");
-            return; // *** BẮT BUỘC ***
+            return; 
         }
-
-        // "Remember me": đọc đúng tên cookie, auto-đăng nhập nếu có
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (Constant.COOKIE_REMEMBER.equals(cookie.getName())) {
                     String username = cookie.getValue();
-
-                    // Tùy yêu cầu: có thể chỉ cần lưu username,
-                    // nhưng chuẩn hơn là nạp Users và set vào session như lúc login
-                    Users remembered = userService.findByUsername(username); // cần có hàm này
+                    Users remembered = userService.findByUsername(username); 
                     if (remembered != null) {
                         session = request.getSession(true);
                         session.setAttribute("account", remembered);
                         response.sendRedirect(request.getContextPath() + "/waiting");
-                        return; // *** BẮT BUỘC ***
+                        return; 
                     }
-                    // Nếu không tìm thấy user theo cookie, bỏ qua và hiển thị form login
                 }
             }
         }
-
-        // Chưa đăng nhập -> hiển thị form
         request.getRequestDispatcher("/views/account/login.jsp").forward(request, response);
-        // Không ghi gì sau forward
+
     }
 
     @Override
@@ -82,18 +74,16 @@ public class LoginController extends HttpServlet {
             return;
         }
 
-        // Sai thông tin
         request.setAttribute("alert", "Tài khoản hoặc mật khẩu không đúng");
         request.getRequestDispatcher("/views/account/login.jsp").forward(request, response);
-        // (không cần code gì thêm sau forward)
     }
 
     private void saveRememberMe(HttpServletResponse response, String username) {
         Cookie cookie = new Cookie(Constant.COOKIE_REMEMBER, username);
-        cookie.setMaxAge(30 * 60);              // 30 phút
-        cookie.setPath("/");                    // để các URL khác cũng đọc được
-        // cookie.setHttpOnly(true);            // khuyên dùng nếu không cần JS đọc
-        // cookie.setSecure(true);              // bật khi chạy HTTPS
+        cookie.setMaxAge(30 * 60);             
+        cookie.setPath("/");                    
+        // cookie.setHttpOnly(true);            
+        // cookie.setSecure(true);              
         response.addCookie(cookie);
     }
 }

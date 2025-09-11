@@ -40,10 +40,9 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public boolean delete(int id) {
         try {
-            categoryDao.delete(id); // DAO của bạn là void
+            categoryDao.delete(id);
             return true;
         } catch (Exception e) {
-            // nếu DAO ném lỗi khi không xoá được
             return false;
         }
     }

@@ -18,7 +18,7 @@ public class CategoryListController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        List<Category> list = categoryService.findAll(); // hoặc lọc theo user nếu bạn muốn
+        List<Category> list = categoryService.findAll();
         System.out.println("Category size = " + (list == null ? 0 : list.size()));
 
         req.setAttribute("listcate", list);

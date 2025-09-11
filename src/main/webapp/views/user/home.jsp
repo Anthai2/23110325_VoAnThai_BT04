@@ -1,19 +1,26 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/style/style.css">
-</head>
-<body>
-<%@ include file="../topbar/topbar.jsp" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
 
-<div class="container">
-    <div class="page">
-        <h2>Xin chào, ${sessionScope.account.fullname}!</h2>
-        <p>Bạn đã đăng nhập thành công. Đây là trang dành cho người dùng.</p>
-    </div>
-</div>
-</body>
-</html>
+<h2>Danh sách Category (User)</h2>
+
+<table border="1" cellpadding="6" cellspacing="0" width="100%">
+  <thead>
+  <tr>
+    <th>STT</th>
+    <th>CategoryID</th>
+    <th>CategoryName</th>
+    <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+  <c:forEach items="${listcate}" var="c" varStatus="st">
+    <tr>
+      <td>${st.index + 1}</td>
+      <td>${c.cate_id}</td>
+      <td>${c.cate_name}</td>
+      <td>${c.description}</td>
+    </tr>
+  </c:forEach>
+  </tbody>
+</table>

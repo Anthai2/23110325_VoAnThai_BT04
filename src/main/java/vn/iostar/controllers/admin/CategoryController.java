@@ -37,7 +37,6 @@ public class CategoryController extends HttpServlet {
                 return;
             }
             case "/admin/category/add": {
-                // hiển thị form thêm mới (có thể dùng chung category-form.jsp nếu bạn muốn)
                 req.getRequestDispatcher("/views/admin/category/category-add.jsp").forward(req, resp);
                 return;
             }
@@ -50,7 +49,6 @@ public class CategoryController extends HttpServlet {
                 if (c == null) { resp.sendError(404); return; }
 
                 req.setAttribute("cate", c);
-                // dùng lại form chung cho edit
                 req.getRequestDispatcher("/views/admin/category/category-form.jsp").forward(req, resp);
                 return;
             }
@@ -78,7 +76,6 @@ public class CategoryController extends HttpServlet {
                     return;
                 }
 
-                // Lấy owner từ session (nếu bạn có ràng buộc user)
                 Users owner = (Users) req.getSession().getAttribute("account");
 
                 Category c = new Category();

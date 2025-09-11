@@ -14,7 +14,7 @@ public class LogoutController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response); // hỗ trợ POST -> dùng chung logic với GET
+        doGet(request, response); 
     }
 
     @Override
@@ -23,12 +23,9 @@ public class LogoutController extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         if (session != null) session.invalidate();
-
-        // Lúc set remember-me bạn đã dùng setPath("/")
-        // => xoá cookie cũng phải dùng đúng path "/"
         Cookie cookie = new Cookie(Constant.COOKIE_REMEMBER, "");
         cookie.setMaxAge(0);
-        cookie.setPath("/"); // đừng dùng getContextPath() nếu lúc set là "/"
+        cookie.setPath("/"); 
         response.addCookie(cookie);
 
         response.sendRedirect(request.getContextPath() + "/login");
